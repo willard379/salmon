@@ -1,0 +1,46 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'jacoco'
+apply plugin: 'org.junit.gen5.gradle'
+
+jar {
+  baseName = 'salmon'
+  version = '0.1.0-SNAPSHOT'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+dependencies {
+
+  testCompile 'org.junit:junit5-api:5.0.0-ALPHA'
+  testCompile 'org.junit:junit4-runner:5.0.0-ALPHA'
+  testCompile 'org.mockito:mockito-all:2.0.2-beta'
+  testCompile 'org.hamcrest:hamcrest-all:1.3'
+
+  runtime 'org.junit:junit5-engine:5.0.0-ALPHA'
+}
+
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'org.junit:junit-gradle:5.0.0-ALPHA'
+  }
+}
+
+junit5 {
+  version '5.0.0-ALPHA'
+  runJunit4 false
+  matchClassName '.*Test'
+// requireTag 'fast'
+// excludeTag 'slow'
+}
