@@ -1,0 +1,18 @@
+language: java
+
+jdk:
+  - oraclejdk8
+
+before_install:
+  - chmod +x gradlew
+
+install:
+  # REVISIT
+  # junit-gradle:5.0.0-ALPHAでは、
+  # gradle assemble(installステップ) と gradle check(scriptステップ) が分かれているとテストが実行されない不具合があるので、
+  # installステップで assemble と check の両方を実行するようにした。この不具合が解消されたときに元に戻す。
+  # ./gradlew assemble
+  - ./gradlew assemble check
+
+#script:
+#  - ./gradlew check
