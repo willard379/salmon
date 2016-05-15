@@ -5,7 +5,7 @@ apply plugin: 'org.junit.gen5.gradle'
 
 jar {
   baseName = 'salmon'
-  version = '0.1.0-SNAPSHOT'
+  version = '0.1.0'
 }
 
 repositories {
@@ -20,10 +20,10 @@ compileTestJava.options.encoding = 'UTF-8'
 
 dependencies {
 
+  testCompile 'org.hamcrest:hamcrest-all:1.3'
   testCompile 'org.junit:junit5-api:5.0.0-ALPHA'
   testCompile 'org.junit:junit4-runner:5.0.0-ALPHA'
-  testCompile 'org.mockito:mockito-all:2.0.2-beta'
-  testCompile 'org.hamcrest:hamcrest-all:1.3'
+  testCompile 'org.mockito:mockito-core:2.0.52-beta'
 
   runtime 'org.junit:junit5-engine:5.0.0-ALPHA'
 }
