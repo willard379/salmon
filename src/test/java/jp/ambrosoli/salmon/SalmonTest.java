@@ -14,7 +14,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,16 +42,16 @@ import jp.ambrosoli.salmon.utils.StringUtil;
 
 @RunWith(JUnit5.class)
 @SuppressWarnings("nls")
-public class SalmonTest {
+class SalmonTest {
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         String osName = System.getProperty("os.name");
         assumeTrue(osName.toLowerCase().contains("windows"));
     }
 
     @Test
-    public void commandの引数にnullを渡すとIllegalArgumentExceptionが発生すること() throws Exception {
+    void commandの引数にnullを渡すとIllegalArgumentExceptionが発生すること() throws Exception {
         // Setup
         String command = null;
 
@@ -67,7 +66,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void オプションなしでコマンドを実行する() throws Exception {
+    void オプションなしでコマンドを実行する() throws Exception {
         msdos(() -> {
 
             // Setup
@@ -84,7 +83,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void オプションを1つ配列で指定してコマンドを実行する() throws Exception {
+    void オプションを1つ配列で指定してコマンドを実行する() throws Exception {
         msdos(() -> {
 
             // Setup
@@ -101,7 +100,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void オプションを複数配列で指定してコマンドを実行する() throws Exception {
+    void オプションを複数配列で指定してコマンドを実行する() throws Exception {
         msdos(() -> {
 
             // Setup
@@ -118,7 +117,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void オプションを1つコレクションで指定してコマンドを実行する() throws Exception {
+    void オプションを1つコレクションで指定してコマンドを実行する() throws Exception {
         msdos(() -> {
 
             // Setup
@@ -135,7 +134,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void オプションを複数コレクションで指定してコマンドを実行する() throws Exception {
+    void オプションを複数コレクションで指定してコマンドを実行する() throws Exception {
         msdos(() -> {
 
             // Setup
@@ -152,7 +151,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void コマンドが正常終了() throws Exception {
+    void コマンドが正常終了() throws Exception {
         msdos(() -> {
             // Setup
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
@@ -172,7 +171,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void コマンドが失敗() throws Exception {
+    void コマンドが失敗() throws Exception {
         msdos(() -> {
             // Setup
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
@@ -192,7 +191,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void コマンドがエラー終了() throws Exception {
+    void コマンドがエラー終了() throws Exception {
         // Setup
         EventHandler<CommandState> succeeded = verifyableEmptyHandler();
         EventHandler<CommandState> failed = verifyableEmptyHandler();
@@ -211,7 +210,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void コマンドがキャンセル終了() throws Exception {
+    void コマンドがキャンセル終了() throws Exception {
         msdos(() -> {
             // Setup
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
@@ -234,7 +233,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void successHandlerで例外発生() throws Exception {
+    void successHandlerで例外発生() throws Exception {
         msdos(() -> {
             // Setup
             EventHandler<CommandState> succeeded1 = verifyableHandler(state -> {
@@ -259,7 +258,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void failedHandlerで例外発生() throws Exception {
+    void failedHandlerで例外発生() throws Exception {
         msdos(() -> {
             // Setup
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
@@ -284,7 +283,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void errorHandlerで例外発生() throws Exception {
+    void errorHandlerで例外発生() throws Exception {
         // Setup
         EventHandler<CommandState> succeeded = verifyableEmptyHandler();
         EventHandler<CommandState> failed = verifyableEmptyHandler();
@@ -307,7 +306,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void cancelledHandlerで例外発生() throws Exception {
+    void cancelledHandlerで例外発生() throws Exception {
         msdos(() -> {
             // Setup
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
@@ -332,7 +331,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void doneHandlerで例外発生() throws Exception {
+    void doneHandlerで例外発生() throws Exception {
         msdos(() -> {
             // Setup
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
@@ -357,7 +356,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void 終了コード1を正常終了の条件とする_終了コード0でコマンド失敗() throws Exception {
+    void 終了コード1を正常終了の条件とする_終了コード0でコマンド失敗() throws Exception {
         msdos(() -> {
             // Setup
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
@@ -377,7 +376,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void 終了コード1を正常終了の条件とする_終了コード1でコマンド成功() throws Exception {
+    void 終了コード1を正常終了の条件とする_終了コード1でコマンド成功() throws Exception {
         msdos(() -> {
             // Setup
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
@@ -398,7 +397,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void successConditionにnullを渡すとエラー終了() throws Exception {
+    void successConditionにnullを渡すとエラー終了() throws Exception {
         msdos(() -> {
             // Setup
             IntPredicate successCondition = null;
@@ -420,7 +419,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void 環境変数に新規変数を追加() throws Exception {
+    void 環境変数に新規変数を追加() throws Exception {
         msdos(() -> {
             // Setup
             Consumer<Map<String, String>> consumer = map -> {
@@ -445,7 +444,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void 既存の環境変数の値を更新() throws Exception {
+    void 既存の環境変数の値を更新() throws Exception {
         msdos(() -> {
             // Setup
             String pwd = Paths.get(getClass().getResource(".").toURI()).toString();
@@ -473,7 +472,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void 既存の環境変数を削除() throws Exception {
+    void 既存の環境変数を削除() throws Exception {
         msdos(() -> {
             // Setup
             Consumer<Map<String, String>> consumer = map -> {
@@ -499,7 +498,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void 非同期で実行() throws Exception {
+    void 非同期で実行() throws Exception {
         msdos(() -> {
             // Setup
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
@@ -520,7 +519,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void 標準出力をファイルにリダイレクト() throws Exception {
+    void 標準出力をファイルにリダイレクト() throws Exception {
         msdos(() -> {
             // Setup
             File tempFile = Files.createTempFile("", "").toFile();
@@ -541,7 +540,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void 標準エラー出力をファイルにリダイレクト() throws Exception {
+    void 標準エラー出力をファイルにリダイレクト() throws Exception {
         msdos(() -> {
             // Setup
             File tempFile = Files.createTempFile("", "").toFile();
@@ -562,7 +561,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void 標準出力をdevnullにリダイレクト() throws Exception {
+    void 標準出力をdevnullにリダイレクト() throws Exception {
         msdos(() -> {
             // Exercise
             CommandState state = command("echo").options("hoge").redirectStdoutToDevNull().execute();
@@ -574,7 +573,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void 標準エラー出力をdevnullにリダイレクト() throws Exception {
+    void 標準エラー出力をdevnullにリダイレクト() throws Exception {
         msdos(() -> {
             // Exercise
             CommandState state = command("java").options("-version").redirectStdoutToDevNull().execute();
@@ -586,7 +585,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_単位を省略_タイムアウトする() throws Exception {
+    void timeout_単位を省略_タイムアウトする() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = 200L;
@@ -601,7 +600,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_単位を省略_タイムアウトしない() throws Exception {
+    void timeout_単位を省略_タイムアウトしない() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = 200L;
@@ -616,7 +615,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_単位を省略_負数_タイムアウトする() throws Exception {
+    void timeout_単位を省略_負数_タイムアウトする() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = -1L;
@@ -631,7 +630,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_ナノ秒を指定_タイムアウトする() throws Exception {
+    void timeout_ナノ秒を指定_タイムアウトする() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = 500L;
@@ -647,7 +646,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_ナノ秒を指定_タイムアウトしない() throws Exception {
+    void timeout_ナノ秒を指定_タイムアウトしない() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = 100000000L;
@@ -663,7 +662,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_ナノ秒を指定_負数_タイムアウトする() throws Exception {
+    void timeout_ナノ秒を指定_負数_タイムアウトする() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = -1L;
@@ -679,7 +678,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_マイクロ秒を指定_タイムアウトする() throws Exception {
+    void timeout_マイクロ秒を指定_タイムアウトする() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = 500L;
@@ -695,7 +694,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_マイクロ秒を指定_タイムアウトしない() throws Exception {
+    void timeout_マイクロ秒を指定_タイムアウトしない() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = 100000L;
@@ -711,7 +710,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_マイクロ秒を指定_負数_タイムアウトする() throws Exception {
+    void timeout_マイクロ秒を指定_負数_タイムアウトする() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = -1L;
@@ -727,7 +726,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_ミリ秒を指定_タイムアウトする() throws Exception {
+    void timeout_ミリ秒を指定_タイムアウトする() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = 50L;
@@ -743,7 +742,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_ミリ秒を指定_タイムアウトしない() throws Exception {
+    void timeout_ミリ秒を指定_タイムアウトしない() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = 50L;
@@ -759,7 +758,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_ミリ秒を指定_負数_タイムアウトする() throws Exception {
+    void timeout_ミリ秒を指定_負数_タイムアウトする() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = -1L;
@@ -775,7 +774,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_秒を指定_タイムアウトする() throws Exception {
+    void timeout_秒を指定_タイムアウトする() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = 1L;
@@ -791,7 +790,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_秒を指定_タイムアウトしない() throws Exception {
+    void timeout_秒を指定_タイムアウトしない() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = 1L;
@@ -807,7 +806,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_秒を指定_負数_タイムアウトする() throws Exception {
+    void timeout_秒を指定_負数_タイムアウトする() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = -1L;
@@ -824,7 +823,7 @@ public class SalmonTest {
 
     @Disabled("時間がかかるので省略")
     @Test
-    public void timeout_分を指定_タイムアウトする() throws Exception {
+    void timeout_分を指定_タイムアウトする() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = 1L;
@@ -840,7 +839,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_分を指定_タイムアウトしない() throws Exception {
+    void timeout_分を指定_タイムアウトしない() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = 1L;
@@ -856,7 +855,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_分を指定_負数_タイムアウトする() throws Exception {
+    void timeout_分を指定_負数_タイムアウトする() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = -1L;
@@ -873,7 +872,7 @@ public class SalmonTest {
 
     @Disabled("時間がかかるので省略")
     @Test
-    public void timeout_時間を指定_タイムアウトする() throws Exception {
+    void timeout_時間を指定_タイムアウトする() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = 1L;
@@ -890,7 +889,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_時間を指定_タイムアウトしない() throws Exception {
+    void timeout_時間を指定_タイムアウトしない() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = 1L;
@@ -906,7 +905,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_時間を指定_負数_タイムアウトする() throws Exception {
+    void timeout_時間を指定_負数_タイムアウトする() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = -1L;
@@ -923,7 +922,7 @@ public class SalmonTest {
 
     @Disabled("時間がかかるので省略")
     @Test
-    public void timeout_日を指定_タイムアウトする() throws Exception {
+    void timeout_日を指定_タイムアウトする() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = 1L;
@@ -939,7 +938,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_日を指定_タイムアウトしない() throws Exception {
+    void timeout_日を指定_タイムアウトしない() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = 1L;
@@ -955,7 +954,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void timeout_日を指定_負数_タイムアウトする() throws Exception {
+    void timeout_日を指定_負数_タイムアウトする() throws Exception {
         msdos(() -> {
             // SetUp
             long timeout = -1L;
@@ -971,7 +970,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void 作業ディレクトリをPathで指定_存在するディレクトリ() throws Exception {
+    void 作業ディレクトリをPathで指定_存在するディレクトリ() throws Exception {
         msdos(() -> {
             // Setup
             Path directory = Paths.get(getClass().getResource(".").toURI());
@@ -986,7 +985,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void 作業ディレクトリをPathで指定_存在しないディレクトリ() throws Exception {
+    void 作業ディレクトリをPathで指定_存在しないディレクトリ() throws Exception {
         msdos(() -> {
             // Setup
             Path directory = Paths.get("notexist");
@@ -1005,7 +1004,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void 作業ディレクトリをPathで指定_null() throws Exception {
+    void 作業ディレクトリをPathで指定_null() throws Exception {
         msdos(() -> {
             // Setup
             Path directory = null;
@@ -1018,7 +1017,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void 作業ディレクトリをStringで指定_存在するディレクトリ() throws Exception {
+    void 作業ディレクトリをStringで指定_存在するディレクトリ() throws Exception {
         msdos(() -> {
             // Setup
             Path directory = Paths.get(getClass().getResource(".").toURI());
@@ -1033,7 +1032,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void 作業ディレクトリをStringで指定_存在しないディレクトリ() throws Exception {
+    void 作業ディレクトリをStringで指定_存在しないディレクトリ() throws Exception {
         msdos(() -> {
             // Setup
             Path directory = Paths.get("notexist");
@@ -1052,7 +1051,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void 作業ディレクトリをStringで指定_null() throws Exception {
+    void 作業ディレクトリをStringで指定_null() throws Exception {
         msdos(() -> {
             // Setup
             String directory = null;
@@ -1065,7 +1064,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void 作業ディレクトリをFileで指定_存在するディレクトリ() throws Exception {
+    void 作業ディレクトリをFileで指定_存在するディレクトリ() throws Exception {
         msdos(() -> {
             // Setup
             Path directory = Paths.get(getClass().getResource(".").toURI());
@@ -1080,7 +1079,7 @@ public class SalmonTest {
     }
 
     @Test
-    public void 作業ディレクトリをFileで指定_存在しないディレクトリ() throws Exception {
+    void 作業ディレクトリをFileで指定_存在しないディレクトリ() throws Exception {
         msdos(() -> {
             // Setup
             Path directory = Paths.get("notexist");
@@ -1100,7 +1099,7 @@ public class SalmonTest {
 
     @DisplayName("hoge")
     @Test
-    public void 作業ディレクトリをFileで指定_null() throws Exception {
+    void 作業ディレクトリをFileで指定_null() throws Exception {
         msdos(() -> {
             // Setup
             File directory = null;
@@ -1112,21 +1111,4 @@ public class SalmonTest {
         });
     }
 
-    @Test
-    public void 作業ディレクトリをFileで指定_絶対パスに変換時にエラー() throws Exception {
-        // SetUp
-        File directory = mock(File.class);
-        IOException cause = new IOException();
-        when(directory.getCanonicalFile()).thenThrow(cause);
-
-        // Exercise
-        UncheckedIOException thrown = expectThrows(UncheckedIOException.class, () -> {
-            command("cd").directory(directory).execute();
-        });
-
-        // Verify
-        assertThat(thrown.getCause(), is(cause));
-    }
-
-    // TODO でっかい出力
 }

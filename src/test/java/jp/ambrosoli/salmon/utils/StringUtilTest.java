@@ -9,10 +9,10 @@ import org.junit.runner.RunWith;
 
 @RunWith(JUnit5.class)
 @SuppressWarnings("nls")
-public class StringUtilTest {
+class StringUtilTest {
 
     @Test
-    public void isEmpty_null空文字でない文字列を渡すとfalseが返される() throws Exception {
+    void isEmpty_null空文字でない文字列を渡すとfalseが返される() throws Exception {
         // SetUp
         String value = "value";
 
@@ -24,7 +24,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void isEmpty_nullを渡すとtrueが返される() throws Exception {
+    void isEmpty_nullを渡すとtrueが返される() throws Exception {
         // SetUp
         String value = null;
 
@@ -36,7 +36,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void isEmpty_空文字を渡すとtrueが返される() throws Exception {
+    void isEmpty_空文字を渡すとtrueが返される() throws Exception {
         // SetUp
         String value = "";
 
@@ -48,7 +48,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void isEmpty_ホワイトスペースを渡すとfalseが返される() throws Exception {
+    void isEmpty_ホワイトスペースを渡すとfalseが返される() throws Exception {
         // SetUp
         String value = " ";
 
@@ -60,7 +60,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void isNotEmpty_null空文字でない文字列を渡すとtrueが返される() throws Exception {
+    void isNotEmpty_null空文字でない文字列を渡すとtrueが返される() throws Exception {
         // SetUp
         String value = "value";
 
@@ -72,7 +72,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void isNotEmpty_nullを渡すとfalseが返される() throws Exception {
+    void isNotEmpty_nullを渡すとfalseが返される() throws Exception {
         // SetUp
         String value = null;
 
@@ -84,7 +84,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void isNotEmpty_空文字を渡すとfalseが返される() throws Exception {
+    void isNotEmpty_空文字を渡すとfalseが返される() throws Exception {
         // SetUp
         String value = "";
 
@@ -96,7 +96,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void isNotEmpty_ホワイトスペースを渡すとtrueが返される() throws Exception {
+    void isNotEmpty_ホワイトスペースを渡すとtrueが返される() throws Exception {
         // SetUp
         String value = " ";
 
@@ -108,7 +108,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void chomp_nullを渡すとnullが返される() throws Exception {
+    void chomp_nullを渡すとnullが返される() throws Exception {
         // SetUp
         String target = null;
 
@@ -120,7 +120,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void chomp_空文字を渡すと空文字が返される() throws Exception {
+    void chomp_空文字を渡すと空文字が返される() throws Exception {
         // SetUp
         String target = "";
 
@@ -132,7 +132,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void chomp_改行コードを含まない文字列を渡すとそのまま返される() throws Exception {
+    void chomp_改行コードを含まない文字列を渡すとそのまま返される() throws Exception {
         // SetUp
         String target = "hoge";
 
@@ -144,7 +144,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void chomp_末尾にCRを含む文字列を渡すと末尾のCRが削除される() throws Exception {
+    void chomp_末尾にCRを含む文字列を渡すと末尾のCRが削除される() throws Exception {
         // SetUp
         String target = "hoge\r";
 
@@ -156,7 +156,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void chomp_末尾にLFを含む文字列を渡すと末尾のLFが削除される() throws Exception {
+    void chomp_末尾にLFを含む文字列を渡すと末尾のLFが削除される() throws Exception {
         // SetUp
         String target = "hoge\n";
 
@@ -168,7 +168,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void chomp_末尾にCRLFを含む文字列を渡すと末尾のCRLFが削除される() throws Exception {
+    void chomp_末尾にCRLFを含む文字列を渡すと末尾のCRLFが削除される() throws Exception {
         // SetUp
         String target = "hoge\r\n";
 
@@ -180,7 +180,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void chomp_先頭にCRを含む文字列を渡すとそのまま返される() throws Exception {
+    void chomp_先頭にCRを含む文字列を渡すとそのまま返される() throws Exception {
         // SetUp
         String target = "\rhoge";
 
@@ -192,7 +192,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void chomp_先頭にLFを含む文字列を渡すとそのまま返される() throws Exception {
+    void chomp_先頭にLFを含む文字列を渡すとそのまま返される() throws Exception {
         // SetUp
         String target = "\nhoge";
 
@@ -204,7 +204,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void chomp_先頭にCRLFを含む文字列を渡すとそのまま返される() throws Exception {
+    void chomp_先頭にCRLFを含む文字列を渡すとそのまま返される() throws Exception {
         // SetUp
         String target = "\r\nhoge";
 
@@ -216,7 +216,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void chomp_途中にCRを含む文字列を渡すとそのまま返される() throws Exception {
+    void chomp_途中にCRを含む文字列を渡すとそのまま返される() throws Exception {
         // SetUp
         String target = "ho\rge";
 
@@ -228,7 +228,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void chomp_途中にLFを含む文字列を渡すとそのまま返される() throws Exception {
+    void chomp_途中にLFを含む文字列を渡すとそのまま返される() throws Exception {
         // SetUp
         String target = "ho\nge";
 
@@ -240,7 +240,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void chomp_途中にCRLFを含む文字列を渡すとそのまま返される() throws Exception {
+    void chomp_途中にCRLFを含む文字列を渡すとそのまま返される() throws Exception {
         // SetUp
         String target = "ho\r\nge";
 
@@ -252,7 +252,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void chomp_先頭と途中と末尾にCRを含む文字列を渡すと末尾のCRのみ削除される() throws Exception {
+    void chomp_先頭と途中と末尾にCRを含む文字列を渡すと末尾のCRのみ削除される() throws Exception {
         // SetUp
         String target = "\rho\rge\r";
 
@@ -264,7 +264,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void chomp_先頭と途中と末尾にLFを含む文字列を渡すと末尾のLFのみ削除される() throws Exception {
+    void chomp_先頭と途中と末尾にLFを含む文字列を渡すと末尾のLFのみ削除される() throws Exception {
         // SetUp
         String target = "\nho\nge\n";
 
@@ -276,7 +276,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void chomp_先頭と途中と末尾にCRLFを含む文字列を渡すと末尾のCRLFのみ削除される() throws Exception {
+    void chomp_先頭と途中と末尾にCRLFを含む文字列を渡すと末尾のCRLFのみ削除される() throws Exception {
         // SetUp
         String target = "\r\nho\r\nge\r\n";
 
@@ -288,7 +288,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void chomp_連続するCRで終わる文字列を渡すと末尾のCRのみ削除される() throws Exception {
+    void chomp_連続するCRで終わる文字列を渡すと末尾のCRのみ削除される() throws Exception {
         // SetUp
         String target = "hoge\r\r";
 
@@ -300,7 +300,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void chomp_連続するLFで終わる文字列を渡すと末尾のLFのみ削除される() throws Exception {
+    void chomp_連続するLFで終わる文字列を渡すと末尾のLFのみ削除される() throws Exception {
         // SetUp
         String target = "hoge\n\n";
 
@@ -312,7 +312,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void chomp_連続するCRLFで終わる文字列を渡すと末尾のCRLFのみ削除される() throws Exception {
+    void chomp_連続するCRLFで終わる文字列を渡すと末尾のCRLFのみ削除される() throws Exception {
         // SetUp
         String target = "hoge\r\n\r\n";
 

@@ -23,7 +23,7 @@ public interface CommandExecutorFactory {
      * このインタフェースの実装クラスが生成する{@link CommandExecutor}に適用されるデフォルトのプライオリティです。
      * </p>
      */
-    public static final int DEFAULT_PRIORITY = 1;
+    int DEFAULT_PRIORITY = 1;
 
     /**
      * <p>

@@ -10,22 +10,16 @@ import java.util.Locale;
 import java.util.function.Consumer;
 
 import jp.ambrosoli.salmon.command.CommandState;
-import jp.ambrosoli.salmon.config.SalmonConfig;
-import jp.ambrosoli.salmon.config.SalmonConfigAccessor;
 import jp.ambrosoli.salmon.event.EventHandler;
+import jp.ambrosoli.salmon.test.util.RunnableToThrowException;
+import jp.ambrosoli.salmon.test.util.SalmonConfigAccessor;
 import jp.ambrosoli.salmon.test.util.SpiedEventHandler;
 
 @SuppressWarnings("nls")
 class SalmonTestHelper {
 
-    static void msdos(final Testable testable) throws Exception {
-        boolean autoMSDos = SalmonConfig.isAutoMSDos();
-        SalmonConfigAccessor.put("auto.msdos", true);
-        try {
-            testable.run();
-        } finally {
-            SalmonConfigAccessor.put("auto.msdos", autoMSDos);
-        }
+    static void msdos(final RunnableToThrowException runnable) throws Exception {
+        SalmonConfigAccessor.withTemporaryConfig("auto.msdos", true, runnable);
     }
 
     static void verifySucceeded(final CommandState state) {
@@ -81,13 +75,8 @@ class SalmonTestHelper {
         return SpiedEventHandler.wrap(consumer::accept);
     }
 
-    @FunctionalInterface
-    interface Testable {
-        void run() throws Exception;
-    }
-
     @SafeVarargs
-    public static void verifyHandled(final EventHandler<CommandState>... handlers) {
+    static void verifyHandled(final EventHandler<CommandState>... handlers) {
         assertAll(() -> {
             for (EventHandler<CommandState> handler : handlers) {
                 verify(handler, only()).handle(any(CommandState.class));
@@ -95,7 +84,7 @@ class SalmonTestHelper {
         });
     }
 
-    public static void verifySucceededHandled(final EventHandler<CommandState> succeeded,
+    static void verifySucceededHandled(final EventHandler<CommandState> succeeded,
             final EventHandler<CommandState> failed, final EventHandler<CommandState> error,
             final EventHandler<CommandState> cancelled, final EventHandler<CommandState> completed) {
         assertAll(() -> {
@@ -107,9 +96,9 @@ class SalmonTestHelper {
         });
     }
 
-    public static void verifyFailedHandled(final EventHandler<CommandState> succeeded,
-            final EventHandler<CommandState> failed, final EventHandler<CommandState> error,
-            final EventHandler<CommandState> cancelled, final EventHandler<CommandState> completed) {
+    static void verifyFailedHandled(final EventHandler<CommandState> succeeded, final EventHandler<CommandState> failed,
+            final EventHandler<CommandState> error, final EventHandler<CommandState> cancelled,
+            final EventHandler<CommandState> completed) {
         assertAll(() -> {
             verify(succeeded, never()).handle(any(CommandState.class));
             verify(failed, only()).handle(any(CommandState.class));
@@ -119,9 +108,9 @@ class SalmonTestHelper {
         });
     }
 
-    public static void verifyErrorHandled(final EventHandler<CommandState> succeeded,
-            final EventHandler<CommandState> failed, final EventHandler<CommandState> error,
-            final EventHandler<CommandState> cancelled, final EventHandler<CommandState> completed) {
+    static void verifyErrorHandled(final EventHandler<CommandState> succeeded, final EventHandler<CommandState> failed,
+            final EventHandler<CommandState> error, final EventHandler<CommandState> cancelled,
+            final EventHandler<CommandState> completed) {
         assertAll(() -> {
             verify(succeeded, never()).handle(any(CommandState.class));
             verify(failed, never()).handle(any(CommandState.class));
@@ -131,7 +120,7 @@ class SalmonTestHelper {
         });
     }
 
-    public static void verifyCancelledHandled(final EventHandler<CommandState> succeeded,
+    static void verifyCancelledHandled(final EventHandler<CommandState> succeeded,
             final EventHandler<CommandState> failed, final EventHandler<CommandState> error,
             final EventHandler<CommandState> cancelled, final EventHandler<CommandState> completed) {
         assertAll(() -> {
@@ -143,11 +132,11 @@ class SalmonTestHelper {
         });
     }
 
-    public static String i18n(final String ja, final String en) {
+    static String i18n(final String ja, final String en) {
         return Locale.getDefault().equals(Locale.JAPAN) ? ja : en;
     }
 
-    public static void verifyThrown(final CommandState state, final Throwable thrown) {
+    static void verifyThrown(final CommandState state, final Throwable thrown) {
         assertAll(() -> {
             assertThat(state.getThrown(), is(notNullValue()));
             assertThat(state.getThrown(), is(instanceOf(thrown.getClass())));

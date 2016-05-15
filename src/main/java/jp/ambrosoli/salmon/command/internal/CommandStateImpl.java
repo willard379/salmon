@@ -21,7 +21,7 @@ class CommandStateImpl implements CommandState {
         return exitCode;
     }
 
-    public void setExitCode(final Integer exitCode) {
+    void setExitCode(final Integer exitCode) {
         this.exitCode = exitCode;
     }
 
@@ -30,7 +30,7 @@ class CommandStateImpl implements CommandState {
         return stdout;
     }
 
-    public void setStdout(final InputStream stdout) {
+    void setStdout(final InputStream stdout) {
         this.stdout = stdout;
     }
 
@@ -39,7 +39,7 @@ class CommandStateImpl implements CommandState {
         return stderr;
     }
 
-    public void setStderr(final InputStream stderr) {
+    void setStderr(final InputStream stderr) {
         this.stderr = stderr;
     }
 
@@ -48,7 +48,7 @@ class CommandStateImpl implements CommandState {
         return thrown;
     }
 
-    public void setThrown(final Throwable thrown) {
+    void setThrown(final Throwable thrown) {
         this.thrown = thrown;
     }
 
@@ -57,7 +57,7 @@ class CommandStateImpl implements CommandState {
         return status;
     }
 
-    public void setStatus(final Status status) {
+    void setStatus(final Status status) {
         this.status = status;
         notifyObservers();
     }

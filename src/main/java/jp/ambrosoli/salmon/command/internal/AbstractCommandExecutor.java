@@ -40,7 +40,7 @@ public abstract class AbstractCommandExecutor implements CommandExecutor {
         return manager.getState();
     }
 
-    private void runProcess(final ProcessBuilder builder, final CommandParameter parameter,
+    protected void runProcess(final ProcessBuilder builder, final CommandParameter parameter,
             final CommandStateManager manager) throws IOException, InterruptedException {
         try {
             Process process = manager.startProcess(builder);
@@ -86,14 +86,14 @@ public abstract class AbstractCommandExecutor implements CommandExecutor {
         }
     }
 
-    private void setEnvironment(final ProcessBuilder builder, final CommandParameter parameter) {
+    protected void setEnvironment(final ProcessBuilder builder, final CommandParameter parameter) {
         Consumer<Map<String, String>> environment = parameter.getEnvironment();
         if (environment != null) {
             environment.accept(builder.environment());
         }
     }
 
-    private void setRedirectFile(final ProcessBuilder builder, final CommandParameter parameter) {
+    protected void setRedirectFile(final ProcessBuilder builder, final CommandParameter parameter) {
         File outputFile = parameter.getRedirectOutput();
         if (outputFile != null) {
             builder.redirectOutput(outputFile);

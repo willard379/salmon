@@ -16,7 +16,7 @@ public class SalmonInitializer {
         initializer.runOnlyOnce();
     }
 
-    public void runOnlyOnce() {
+    private void runOnlyOnce() {
         if (initialized) {
             return;
         }
