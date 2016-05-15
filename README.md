@@ -1,1 +1,1 @@
-# salmon
+# salmon [![Build Status](https://travis-ci.org/willard379/salmon.svg?branch=master)](https://travis-ci.org/willard379/salmon)
