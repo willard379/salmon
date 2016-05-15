@@ -31,7 +31,7 @@ if [ ! `yum list installed | grep unzip` ] ; then
 fi
 
 # jdk
-if [ ! `rpm -qa | grep jdk` ] ; then
+if [ ! `rpm -qa | grep ${JDK_NAME}` ] ; then
   wget -q --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" ${JDK_URL}
   rpm --quiet -ivh ${JDK_ARCHIVE}
   rm -f ${JDK_ARCHIVE}
