@@ -36,28 +36,28 @@ class PlatformUtilTest {
 
         @Test
         void getDevNull() throws Exception {
-            // Exercise
+            // Exercise SUT
             File devNull = PlatformUtil.devNull();
 
-            // Verify
+            // Verify outcome
             assertThat(devNull.toString(), is("nul"));
         }
 
         @Test
         void pathSeparator() throws Exception {
-            // Exercise
+            // Exercise SUT
             String pathSeparator = PlatformUtil.pathSeparator();
 
-            // Verify
+            // Verify outcome
             assertThat(pathSeparator, is(";"));
         }
 
         @Test
         void pathKey() throws Exception {
-            // Exercise
+            // Exercise SUT
             String pathKey = PlatformUtil.pathKey();
 
-            // Verify
+            // Verify outcome
             assertThat(pathKey, is("Path"));
         }
     }
@@ -82,28 +82,28 @@ class PlatformUtilTest {
 
         @Test
         void getDevNull() throws Exception {
-            // Exercise
+            // Exercise SUT
             File devNull = PlatformUtil.devNull();
 
-            // Verify
+            // Verify outcome
             assertThat(devNull.toString(), is("/dev/null"));
         }
 
         @Test
         void pathSeparator() throws Exception {
-            // Exercise
+            // Exercise SUT
             String pathSeparator = PlatformUtil.pathSeparator();
 
-            // Verify
+            // Verify outcome
             assertThat(pathSeparator, is(":"));
         }
 
         @Test
         void pathKey() throws Exception {
-            // Exercise
+            // Exercise SUT
             String pathKey = PlatformUtil.pathKey();
 
-            // Verify
+            // Verify outcome
             assertThat(pathKey, is("PATH"));
         }
     }

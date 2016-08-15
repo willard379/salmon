@@ -52,15 +52,15 @@ class SalmonTest {
 
     @Test
     void commandの引数にnullを渡すとIllegalArgumentExceptionが発生すること() throws Exception {
-        // Setup
+        // Set up fixture
         String command = null;
 
-        // Exercise
+        // Exercise SUT
         IllegalArgumentException thrown = expectThrows(IllegalArgumentException.class, () -> {
             command(command);
         });
 
-        // Verify
+        // Verify outcome
         String expectedMessage = i18n("コマンド名にnullや空文字は指定できません。", "The command name must not be null or empty.");
         assertThat(thrown.getMessage(), is(expectedMessage));
     }
@@ -69,13 +69,13 @@ class SalmonTest {
     void オプションなしでコマンドを実行する() throws Exception {
         msdos(() -> {
 
-            // Setup
+            // Set up fixture
             String command = "cd";
 
-            // Exercise
+            // Exercise SUT
             CommandState actual = command(command).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(actual);
             String expected = new File(".").getCanonicalPath();
             assertThat(StringUtil.chomp(IOUtil.readAll(actual.getStdout())), is(expected));
@@ -86,14 +86,14 @@ class SalmonTest {
     void オプションを1つ配列で指定してコマンドを実行する() throws Exception {
         msdos(() -> {
 
-            // Setup
+            // Set up fixture
             String command = "echo";
             String[] options = { "hoge" };
 
-            // Exercise
+            // Exercise SUT
             CommandState actual = command(command).options(options).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(actual);
             assertThat(StringUtil.chomp(IOUtil.readAll(actual.getStdout())), is("hoge"));
         });
@@ -103,14 +103,14 @@ class SalmonTest {
     void オプションを複数配列で指定してコマンドを実行する() throws Exception {
         msdos(() -> {
 
-            // Setup
+            // Set up fixture
             String command = "echo";
             String[] options = { "hoge", "foo", "bar" };
 
-            // Exercise
+            // Exercise SUT
             CommandState actual = command(command).options(options).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(actual);
             assertThat(StringUtil.chomp(IOUtil.readAll(actual.getStdout())), is("hoge foo bar"));
         });
@@ -120,14 +120,14 @@ class SalmonTest {
     void オプションを1つコレクションで指定してコマンドを実行する() throws Exception {
         msdos(() -> {
 
-            // Setup
+            // Set up fixture
             String command = "echo";
             List<String> options = Arrays.asList("hoge");
 
-            // Exercise
+            // Exercise SUT
             CommandState actual = command(command).options(options).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(actual);
             assertThat(StringUtil.chomp(IOUtil.readAll(actual.getStdout())), is("hoge"));
         });
@@ -137,14 +137,14 @@ class SalmonTest {
     void オプションを複数コレクションで指定してコマンドを実行する() throws Exception {
         msdos(() -> {
 
-            // Setup
+            // Set up fixture
             String command = "echo";
             List<String> options = Arrays.asList("hoge", "foo", "bar");
 
-            // Exercise
+            // Exercise SUT
             CommandState actual = command(command).options(options).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(actual);
             assertThat(StringUtil.chomp(IOUtil.readAll(actual.getStdout())), is("hoge foo bar"));
         });
@@ -153,18 +153,18 @@ class SalmonTest {
     @Test
     void コマンドが正常終了() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
             EventHandler<CommandState> failed = verifyableEmptyHandler();
             EventHandler<CommandState> error = verifyableEmptyHandler();
             EventHandler<CommandState> cancelled = verifyableEmptyHandler();
             EventHandler<CommandState> done = verifyableEmptyHandler();
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("exit").options("0").onSucceeded(succeeded).onFailed(failed).onError(error)
                     .onCancelled(cancelled).onDone(done).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(state);
             verifySucceededHandled(succeeded, failed, error, cancelled, done);
         });
@@ -173,18 +173,18 @@ class SalmonTest {
     @Test
     void コマンドが失敗() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
             EventHandler<CommandState> failed = verifyableEmptyHandler();
             EventHandler<CommandState> error = verifyableEmptyHandler();
             EventHandler<CommandState> cancelled = verifyableEmptyHandler();
             EventHandler<CommandState> done = verifyableEmptyHandler();
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("exit").options("1").onSucceeded(succeeded).onFailed(failed).onError(error)
                     .onCancelled(cancelled).onDone(done).execute();
 
-            // Verify
+            // Verify outcome
             verifyFailed(state);
             verifyFailedHandled(succeeded, failed, error, cancelled, done);
         });
@@ -192,38 +192,38 @@ class SalmonTest {
 
     @Test
     void コマンドがエラー終了() throws Exception {
-        // Setup
+        // Set up fixture
         EventHandler<CommandState> succeeded = verifyableEmptyHandler();
         EventHandler<CommandState> failed = verifyableEmptyHandler();
         EventHandler<CommandState> error = verifyableHandler(SalmonTestHelper::verifyError);
         EventHandler<CommandState> cancelled = verifyableEmptyHandler();
         EventHandler<CommandState> done = verifyableEmptyHandler();
 
-        // Exercise
+        // Exercise SUT
         assertThrows(IOException.class, () -> {
             command("存在しないコマンド").onSucceeded(succeeded).onFailed(failed).onError(error).onCancelled(cancelled)
                     .onDone(done).execute();
         });
 
-        // Verify
+        // Verify outcome
         verifyErrorHandled(succeeded, failed, error, cancelled, done);
     }
 
     @Test
     void コマンドがキャンセル終了() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
             EventHandler<CommandState> failed = verifyableEmptyHandler();
             EventHandler<CommandState> error = verifyableEmptyHandler();
             EventHandler<CommandState> cancelled = verifyableEmptyHandler();
             EventHandler<CommandState> done = verifyableEmptyHandler();
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("exit").options("0").timeout(-1).onSucceeded(succeeded).onFailed(failed)
                     .onError(error).onCancelled(cancelled).onDone(done).execute();
 
-            // Verify
+            // Verify outcome
             verifyCancelled(state);
             verifyCancelledHandled(succeeded, failed, error, cancelled, done);
             Exception ecpectedThrown = new TimeoutException(
@@ -235,7 +235,7 @@ class SalmonTest {
     @Test
     void successHandlerで例外発生() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             EventHandler<CommandState> succeeded1 = verifyableHandler(state -> {
                 throw new RuntimeException();
             });
@@ -245,13 +245,13 @@ class SalmonTest {
             EventHandler<CommandState> cancelled = verifyableEmptyHandler();
             EventHandler<CommandState> done = verifyableEmptyHandler();
 
-            // Exercise
+            // Exercise SUT
             expectThrows(EventHandlingException.class, () -> {
                 command("exit").options("0").onSucceeded(succeeded1).onSucceeded(succeeded2).onFailed(failed)
                         .onError(error).onCancelled(cancelled).onDone(done).execute();
             });
 
-            // Verify
+            // Verify outcome
             verifySucceededHandled(succeeded1, failed, error, cancelled, done);
             verify(succeeded2, only()).handle(any(CommandState.class));
         });
@@ -260,7 +260,7 @@ class SalmonTest {
     @Test
     void failedHandlerで例外発生() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
             EventHandler<CommandState> failed1 = verifyableHandler(state -> {
                 throw new RuntimeException();
@@ -270,13 +270,13 @@ class SalmonTest {
             EventHandler<CommandState> cancelled = verifyableEmptyHandler();
             EventHandler<CommandState> done = verifyableEmptyHandler();
 
-            // Exercise
+            // Exercise SUT
             expectThrows(EventHandlingException.class, () -> {
                 command("exit").options("1").onSucceeded(succeeded).onFailed(failed1).onFailed(failed2).onError(error)
                         .onCancelled(cancelled).onDone(done).execute();
             });
 
-            // Verify
+            // Verify outcome
             verifyFailedHandled(succeeded, failed1, error, cancelled, done);
             verify(failed2, only()).handle(any(CommandState.class));
         });
@@ -284,7 +284,7 @@ class SalmonTest {
 
     @Test
     void errorHandlerで例外発生() throws Exception {
-        // Setup
+        // Set up fixture
         EventHandler<CommandState> succeeded = verifyableEmptyHandler();
         EventHandler<CommandState> failed = verifyableEmptyHandler();
         EventHandler<CommandState> error1 = verifyableHandler(state -> {
@@ -294,13 +294,13 @@ class SalmonTest {
         EventHandler<CommandState> cancelled = verifyableEmptyHandler();
         EventHandler<CommandState> done = verifyableEmptyHandler();
 
-        // Exercise
+        // Exercise SUT
         assertThrows(EventHandlingException.class, () -> {
             command("存在しないコマンド").onSucceeded(succeeded).onFailed(failed).onError(error1).onError(error2)
                     .onCancelled(cancelled).onDone(done).execute();
         });
 
-        // Verify
+        // Verify outcome
         verifyErrorHandled(succeeded, failed, error1, cancelled, done);
         verify(error2, only()).handle(any(CommandState.class));
     }
@@ -308,7 +308,7 @@ class SalmonTest {
     @Test
     void cancelledHandlerで例外発生() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
             EventHandler<CommandState> failed = verifyableEmptyHandler();
             EventHandler<CommandState> error = verifyableEmptyHandler();
@@ -318,13 +318,13 @@ class SalmonTest {
             EventHandler<CommandState> cancelled2 = verifyableHandler(SalmonTestHelper::verifyCancelled);
             EventHandler<CommandState> done = verifyableEmptyHandler();
 
-            // Exercise
+            // Exercise SUT
             expectThrows(EventHandlingException.class, () -> {
                 command("exit").options("0").timeout(-1).onSucceeded(succeeded).onFailed(failed).onError(error)
                         .onCancelled(cancelled1).onCancelled(cancelled2).onDone(done).execute();
             });
 
-            // Verify
+            // Verify outcome
             verifyCancelledHandled(succeeded, failed, error, cancelled1, done);
             verify(cancelled2, only()).handle(any(CommandState.class));
         });
@@ -333,7 +333,7 @@ class SalmonTest {
     @Test
     void doneHandlerで例外発生() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
             EventHandler<CommandState> failed = verifyableEmptyHandler();
             EventHandler<CommandState> error = verifyableEmptyHandler();
@@ -343,13 +343,13 @@ class SalmonTest {
             });
             EventHandler<CommandState> done2 = verifyableHandler(SalmonTestHelper::verifySucceeded);
 
-            // Exercise
+            // Exercise SUT
             expectThrows(EventHandlingException.class, () -> {
                 command("exit").options("0").onSucceeded(succeeded).onFailed(failed).onError(error)
                         .onCancelled(cancelled).onDone(done1).onDone(done2).execute();
             });
 
-            // Verify
+            // Verify outcome
             verifySucceededHandled(succeeded, failed, error, cancelled, done1);
             verify(done2, only()).handle(any(CommandState.class));
         });
@@ -358,18 +358,18 @@ class SalmonTest {
     @Test
     void 終了コード1を正常終了の条件とする_終了コード0でコマンド失敗() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
             EventHandler<CommandState> failed = verifyableEmptyHandler();
             EventHandler<CommandState> error = verifyableEmptyHandler();
             EventHandler<CommandState> cancelled = verifyableEmptyHandler();
             EventHandler<CommandState> done = verifyableEmptyHandler();
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("exit").options("0").successCondition(rc -> rc == 1).onSucceeded(succeeded)
                     .onFailed(failed).onError(error).onCancelled(cancelled).onDone(done).execute();
 
-            // Verify
+            // Verify outcome
             verifyFailed(state);
             verifyFailedHandled(succeeded, failed, error, cancelled, done);
         });
@@ -378,18 +378,18 @@ class SalmonTest {
     @Test
     void 終了コード1を正常終了の条件とする_終了コード1でコマンド成功() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
             EventHandler<CommandState> failed = verifyableEmptyHandler();
             EventHandler<CommandState> error = verifyableEmptyHandler();
             EventHandler<CommandState> cancelled = verifyableEmptyHandler();
             EventHandler<CommandState> done = verifyableEmptyHandler();
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("exit").options("1").successCondition(rc -> rc == 1).onSucceeded(succeeded)
                     .onFailed(failed).onError(error).onCancelled(cancelled).onDone(done).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(state);
             verifySucceededHandled(succeeded, failed, error, cancelled, done);
         });
@@ -399,7 +399,7 @@ class SalmonTest {
     @Test
     void successConditionにnullを渡すとエラー終了() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             IntPredicate successCondition = null;
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
             EventHandler<CommandState> failed = verifyableEmptyHandler();
@@ -407,13 +407,13 @@ class SalmonTest {
             EventHandler<CommandState> cancelled = verifyableEmptyHandler();
             EventHandler<CommandState> done = verifyableEmptyHandler();
 
-            // Exercise
+            // Exercise SUT
             expectThrows(NullPointerException.class, () -> {
                 command(":").successCondition(successCondition).onSucceeded(succeeded).onFailed(failed).onError(error)
                         .onCancelled(cancelled).onDone(done).execute();
             });
 
-            // Verify
+            // Verify outcome
             verifyErrorHandled(succeeded, failed, error, cancelled, done);
         });
     }
@@ -421,15 +421,15 @@ class SalmonTest {
     @Test
     void 環境変数に新規変数を追加() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             Consumer<Map<String, String>> consumer = map -> {
                 map.put("key", "value");
             };
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("set").environment(consumer).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(state);
 
             try (BufferedReader reader = IOUtil.toBufferedReader(state.getStdout())) {
@@ -446,7 +446,7 @@ class SalmonTest {
     @Test
     void 既存の環境変数の値を更新() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             String pwd = Paths.get(getClass().getResource(".").toURI()).toString();
             Consumer<Map<String, String>> consumer = map -> {
                 String oldPath = map.get(PlatformUtil.pathKey());
@@ -454,10 +454,10 @@ class SalmonTest {
                 map.put(PlatformUtil.pathKey(), newPath);
             };
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("set").environment(consumer).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(state);
 
             try (BufferedReader reader = IOUtil.toBufferedReader(state.getStdout())) {
@@ -474,16 +474,16 @@ class SalmonTest {
     @Test
     void 既存の環境変数を削除() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             Consumer<Map<String, String>> consumer = map -> {
                 assumeTrue(map.containsKey("JAVA_HOME"));
                 map.remove("JAVA_HOME");
             };
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("set").environment(consumer).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(state);
 
             try (BufferedReader reader = IOUtil.toBufferedReader(state.getStdout())) {
@@ -500,15 +500,15 @@ class SalmonTest {
     @Test
     void 非同期で実行() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             EventHandler<CommandState> succeeded = verifyableEmptyHandler();
             EventHandler<CommandState> done = verifyableEmptyHandler();
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("ping").options("127.0.0.1", "-n", "2").async(true).onSucceeded(succeeded)
                     .onDone(done).execute();
 
-            // Verify
+            // Verify outcome
             assertThat(state.isReady(), is(true));
             Thread.sleep(100L);
             assertThat(state.isRunning(), is(true));
@@ -521,14 +521,14 @@ class SalmonTest {
     @Test
     void 標準出力をファイルにリダイレクト() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             File tempFile = Files.createTempFile("", "").toFile();
 
             try {
-                // Exercise
+                // Exercise SUT
                 CommandState state = command("echo").options("hoge").redirectStdout(tempFile).execute();
 
-                // Verify
+                // Verify outcome
                 verifySucceeded(state);
                 assertThat(StringUtil.chomp(IOUtil.readAll(new FileInputStream(tempFile))), is("hoge"));
 
@@ -542,14 +542,14 @@ class SalmonTest {
     @Test
     void 標準エラー出力をファイルにリダイレクト() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             File tempFile = Files.createTempFile("", "").toFile();
 
             try {
-                // Exercise
+                // Exercise SUT
                 CommandState state = command("java").options("-version").redirectStderr(tempFile).execute();
 
-                // Verify
+                // Verify outcome
                 verifySucceeded(state);
                 assertThat(StringUtil.chomp(IOUtil.readAll(new FileInputStream(tempFile))), startsWith("java version"));
 
@@ -563,10 +563,10 @@ class SalmonTest {
     @Test
     void 標準出力をdevnullにリダイレクト() throws Exception {
         msdos(() -> {
-            // Exercise
+            // Exercise SUT
             CommandState state = command("echo").options("hoge").redirectStdoutToDevNull().execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(state);
             assertThat(IOUtil.readAll(state.getStdout()), is(""));
         });
@@ -575,10 +575,10 @@ class SalmonTest {
     @Test
     void 標準エラー出力をdevnullにリダイレクト() throws Exception {
         msdos(() -> {
-            // Exercise
+            // Exercise SUT
             CommandState state = command("java").options("-version").redirectStdoutToDevNull().execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(state);
             assertThat(IOUtil.readAll(state.getStdout()), is(""));
         });
@@ -587,13 +587,13 @@ class SalmonTest {
     @Test
     void timeout_単位を省略_タイムアウトする() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = 200L;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("ping").options("127.0.0.1", "-n", "2").timeout(timeout).execute();
 
-            // Verify
+            // Verify outcome
             verifyCancelled(state);
             assertThat(state.getExitCode(), is(1));
         });
@@ -602,13 +602,13 @@ class SalmonTest {
     @Test
     void timeout_単位を省略_タイムアウトしない() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = 200L;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command(":").timeout(timeout).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(state);
             assertThat(state.getExitCode(), is(0));
         });
@@ -617,13 +617,13 @@ class SalmonTest {
     @Test
     void timeout_単位を省略_負数_タイムアウトする() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = -1L;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command(":").timeout(timeout).execute();
 
-            // Verify
+            // Verify outcome
             verifyCancelled(state);
             assertThat(state.getExitCode(), is(1));
         });
@@ -632,14 +632,14 @@ class SalmonTest {
     @Test
     void timeout_ナノ秒を指定_タイムアウトする() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = 500L;
             TimeUnit unit = TimeUnit.NANOSECONDS;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("ping").options("127.0.0.1", "-n", "2").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifyCancelled(state);
             assertThat(state.getExitCode(), is(1));
         });
@@ -648,14 +648,14 @@ class SalmonTest {
     @Test
     void timeout_ナノ秒を指定_タイムアウトしない() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = 100000000L;
             TimeUnit unit = TimeUnit.NANOSECONDS;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command(":").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(state);
             assertThat(state.getExitCode(), is(0));
         });
@@ -664,14 +664,14 @@ class SalmonTest {
     @Test
     void timeout_ナノ秒を指定_負数_タイムアウトする() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = -1L;
             TimeUnit unit = TimeUnit.NANOSECONDS;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command(":").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifyCancelled(state);
             assertThat(state.getExitCode(), is(1));
         });
@@ -680,14 +680,14 @@ class SalmonTest {
     @Test
     void timeout_マイクロ秒を指定_タイムアウトする() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = 500L;
             TimeUnit unit = TimeUnit.MICROSECONDS;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("ping").options("127.0.0.1", "-n", "2").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifyCancelled(state);
             assertThat(state.getExitCode(), is(1));
         });
@@ -696,14 +696,14 @@ class SalmonTest {
     @Test
     void timeout_マイクロ秒を指定_タイムアウトしない() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = 100000L;
             TimeUnit unit = TimeUnit.MICROSECONDS;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command(":").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(state);
             assertThat(state.getExitCode(), is(0));
         });
@@ -712,14 +712,14 @@ class SalmonTest {
     @Test
     void timeout_マイクロ秒を指定_負数_タイムアウトする() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = -1L;
             TimeUnit unit = TimeUnit.MICROSECONDS;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command(":").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifyCancelled(state);
             assertThat(state.getExitCode(), is(1));
         });
@@ -728,14 +728,14 @@ class SalmonTest {
     @Test
     void timeout_ミリ秒を指定_タイムアウトする() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = 50L;
             TimeUnit unit = TimeUnit.MILLISECONDS;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("ping").options("127.0.0.1", "-n", "2").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifyCancelled(state);
             assertThat(state.getExitCode(), is(1));
         });
@@ -744,14 +744,14 @@ class SalmonTest {
     @Test
     void timeout_ミリ秒を指定_タイムアウトしない() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = 50L;
             TimeUnit unit = TimeUnit.MILLISECONDS;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command(":").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(state);
             assertThat(state.getExitCode(), is(0));
         });
@@ -760,14 +760,14 @@ class SalmonTest {
     @Test
     void timeout_ミリ秒を指定_負数_タイムアウトする() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = -1L;
             TimeUnit unit = TimeUnit.MILLISECONDS;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command(":").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifyCancelled(state);
             assertThat(state.getExitCode(), is(1));
         });
@@ -776,14 +776,14 @@ class SalmonTest {
     @Test
     void timeout_秒を指定_タイムアウトする() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = 1L;
             TimeUnit unit = TimeUnit.SECONDS;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("ping").options("127.0.0.1", "-n", "3").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifyCancelled(state);
             assertThat(state.getExitCode(), is(1));
         });
@@ -792,14 +792,14 @@ class SalmonTest {
     @Test
     void timeout_秒を指定_タイムアウトしない() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = 1L;
             TimeUnit unit = TimeUnit.SECONDS;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command(":").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(state);
             assertThat(state.getExitCode(), is(0));
         });
@@ -808,14 +808,14 @@ class SalmonTest {
     @Test
     void timeout_秒を指定_負数_タイムアウトする() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = -1L;
             TimeUnit unit = TimeUnit.SECONDS;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command(":").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifyCancelled(state);
             assertThat(state.getExitCode(), is(1));
         });
@@ -825,14 +825,14 @@ class SalmonTest {
     @Test
     void timeout_分を指定_タイムアウトする() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = 1L;
             TimeUnit unit = TimeUnit.MINUTES;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("ping").options("127.0.0.1", "-n", "70").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifyCancelled(state);
             assertThat(state.getExitCode(), is(1));
         });
@@ -841,14 +841,14 @@ class SalmonTest {
     @Test
     void timeout_分を指定_タイムアウトしない() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = 1L;
             TimeUnit unit = TimeUnit.MINUTES;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command(":").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(state);
             assertThat(state.getExitCode(), is(0));
         });
@@ -857,14 +857,14 @@ class SalmonTest {
     @Test
     void timeout_分を指定_負数_タイムアウトする() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = -1L;
             TimeUnit unit = TimeUnit.MINUTES;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("ping").options("127.0.0.1", "-n", "3").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifyCancelled(state);
             assertThat(state.getExitCode(), is(1));
         });
@@ -874,14 +874,14 @@ class SalmonTest {
     @Test
     void timeout_時間を指定_タイムアウトする() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = 1L;
             TimeUnit unit = TimeUnit.HOURS;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("ping").options("127.0.0.1", "-n", "3650").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifyCancelled(state);
             assertThat(state.getExitCode(), is(1));
         });
@@ -891,14 +891,14 @@ class SalmonTest {
     @Test
     void timeout_時間を指定_タイムアウトしない() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = 1L;
             TimeUnit unit = TimeUnit.HOURS;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command(":").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(state);
             assertThat(state.getExitCode(), is(0));
         });
@@ -907,14 +907,14 @@ class SalmonTest {
     @Test
     void timeout_時間を指定_負数_タイムアウトする() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = -1L;
             TimeUnit unit = TimeUnit.HOURS;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command(":").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifyCancelled(state);
             assertThat(state.getExitCode(), is(1));
         });
@@ -924,14 +924,14 @@ class SalmonTest {
     @Test
     void timeout_日を指定_タイムアウトする() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = 1L;
             TimeUnit unit = TimeUnit.DAYS;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("ping").options("127.0.0.1", "-n", "86410").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifyCancelled(state);
             assertThat(state.getExitCode(), is(1));
         });
@@ -940,14 +940,14 @@ class SalmonTest {
     @Test
     void timeout_日を指定_タイムアウトしない() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = 1L;
             TimeUnit unit = TimeUnit.DAYS;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command(":").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(state);
             assertThat(state.getExitCode(), is(0));
         });
@@ -956,14 +956,14 @@ class SalmonTest {
     @Test
     void timeout_日を指定_負数_タイムアウトする() throws Exception {
         msdos(() -> {
-            // SetUp
+            // Set up fixture
             long timeout = -1L;
             TimeUnit unit = TimeUnit.DAYS;
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command(":").timeout(timeout, unit).execute();
 
-            // Verify
+            // Verify outcome
             verifyCancelled(state);
             assertThat(state.getExitCode(), is(1));
         });
@@ -972,13 +972,13 @@ class SalmonTest {
     @Test
     void 作業ディレクトリをPathで指定_存在するディレクトリ() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             Path directory = Paths.get(getClass().getResource(".").toURI());
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("cd").directory(directory).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(state);
             assertThat(StringUtil.chomp(IOUtil.readAll(state.getStdout())), is(directory.toString()));
         });
@@ -987,15 +987,15 @@ class SalmonTest {
     @Test
     void 作業ディレクトリをPathで指定_存在しないディレクトリ() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             Path directory = Paths.get("notexist");
 
-            // Exercise
+            // Exercise SUT
             IllegalArgumentException thrown = expectThrows(IllegalArgumentException.class, () -> {
                 command("cd").directory(directory).execute();
             });
 
-            // Verify
+            // Verify outcome
             String absolutePath = directory.toAbsolutePath().toString();
             String expectMessage = i18n("指定されたディレクトリは存在しません。[" + absolutePath + "]",
                     "The specified directory does not exist. [" + absolutePath + "]");
@@ -1006,10 +1006,10 @@ class SalmonTest {
     @Test
     void 作業ディレクトリをPathで指定_null() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             Path directory = null;
 
-            // Exercise
+            // Exercise SUT
             expectThrows(NullPointerException.class, () -> {
                 command("cd").directory(directory).execute();
             });
@@ -1019,13 +1019,13 @@ class SalmonTest {
     @Test
     void 作業ディレクトリをStringで指定_存在するディレクトリ() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             Path directory = Paths.get(getClass().getResource(".").toURI());
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("cd").directory(directory.toString()).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(state);
             assertThat(StringUtil.chomp(IOUtil.readAll(state.getStdout())), is(directory.toString()));
         });
@@ -1034,15 +1034,15 @@ class SalmonTest {
     @Test
     void 作業ディレクトリをStringで指定_存在しないディレクトリ() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             Path directory = Paths.get("notexist");
 
-            // Exercise
+            // Exercise SUT
             IllegalArgumentException thrown = expectThrows(IllegalArgumentException.class, () -> {
                 command("cd").directory(directory.toString()).execute();
             });
 
-            // Verify
+            // Verify outcome
             String absolutePath = directory.toAbsolutePath().toString();
             String expectMessage = i18n("指定されたディレクトリは存在しません。[" + absolutePath + "]",
                     "The specified directory does not exist. [" + absolutePath + "]");
@@ -1053,10 +1053,10 @@ class SalmonTest {
     @Test
     void 作業ディレクトリをStringで指定_null() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             String directory = null;
 
-            // Exercise
+            // Exercise SUT
             expectThrows(NullPointerException.class, () -> {
                 command("cd").directory(directory).execute();
             });
@@ -1066,13 +1066,13 @@ class SalmonTest {
     @Test
     void 作業ディレクトリをFileで指定_存在するディレクトリ() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             Path directory = Paths.get(getClass().getResource(".").toURI());
 
-            // Exercise
+            // Exercise SUT
             CommandState state = command("cd").directory(directory.toFile()).execute();
 
-            // Verify
+            // Verify outcome
             verifySucceeded(state);
             assertThat(StringUtil.chomp(IOUtil.readAll(state.getStdout())), is(directory.toString()));
         });
@@ -1081,15 +1081,15 @@ class SalmonTest {
     @Test
     void 作業ディレクトリをFileで指定_存在しないディレクトリ() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             Path directory = Paths.get("notexist");
 
-            // Exercise
+            // Exercise SUT
             IllegalArgumentException thrown = expectThrows(IllegalArgumentException.class, () -> {
                 command("cd").directory(directory.toFile()).execute();
             });
 
-            // Verify
+            // Verify outcome
             String absolutePath = directory.toAbsolutePath().toString();
             String expectMessage = i18n("指定されたディレクトリは存在しません。[" + absolutePath + "]",
                     "The specified directory does not exist. [" + absolutePath + "]");
@@ -1101,10 +1101,10 @@ class SalmonTest {
     @Test
     void 作業ディレクトリをFileで指定_null() throws Exception {
         msdos(() -> {
-            // Setup
+            // Set up fixture
             File directory = null;
 
-            // Exercise
+            // Exercise SUT
             expectThrows(NullPointerException.class, () -> {
                 command("cd").directory(directory).execute();
             });

@@ -22,10 +22,10 @@ class SalmonConfigTest {
 
     @Test
     void salmon_propertiesが存在しない場合_デフォルト値がロードされること() throws Exception {
-        // Exercise
+        // Exercise SUT
         SalmonConfig.initialize();
 
-        // Verify
+        // Verify outcome
         assertAll(() -> {
             assertThat(SalmonConfig.isAutoMSDos(), is(false));
         });
@@ -33,13 +33,13 @@ class SalmonConfigTest {
 
     @Test
     void salmon_propertiesが存在する場合_設定値がロードされること() throws Exception {
-        // Setup
+        // Set up fixture
         SalmonConfigAccessor.deploy(this, "salmon.properties.test");
 
-        // Exercise
+        // Exercise SUT
         SalmonConfig.initialize();
 
-        // Verify
+        // Verify outcome
         assertAll(() -> {
             assertThat(SalmonConfig.isAutoMSDos(), is(true));
         });
@@ -47,25 +47,25 @@ class SalmonConfigTest {
 
     @Test
     void salmon_automsdosの設定値がない場合_isAutoMSDosがfalseを返すこと() throws Exception {
-        // Setup
+        // Set up fixture
         SalmonConfigAccessor.deploy(this, "salmon.properties.empty");
 
-        // Exercise
+        // Exercise SUT
         SalmonConfig.initialize();
 
-        // Verify
+        // Verify outcome
         assertThat(SalmonConfig.isAutoMSDos(), is(false));
     }
 
     @Test
     void salmon_automsdosの設定値が不正な場合_isAutoMSDosがfalseを返すこと() throws Exception {
-        // Setup
+        // Set up fixture
         SalmonConfigAccessor.deploy(this, "salmon.properties.invalid");
 
-        // Exercise
+        // Exercise SUT
         SalmonConfig.initialize();
 
-        // Verify
+        // Verify outcome
         assertThat(SalmonConfig.isAutoMSDos(), is(false));
     }
 

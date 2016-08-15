@@ -35,20 +35,20 @@ class IOUtilTest {
     //*******************************************************
     @Test
     void closeSilentry_IOExceptionが発生しない() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = mock(InputStream.class);
 
-        // Exercise
+        // Exercise SUT
         IOUtil.closeSilently(stream);
     }
 
     @Test
     void closeSilentry_IOExceptionが発生する() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = mock(InputStream.class);
         doThrow(new IOException()).when(stream).close();
 
-        // Exercise & Verify
+        // Exercise SUT & Verify outcome
         expectThrows(UncheckedIOException.class, () -> {
             IOUtil.closeSilently(stream);
         });
@@ -56,20 +56,20 @@ class IOUtilTest {
 
     @Test
     void closeSilentry_null() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = null;
 
-        // Exercise
+        // Exercise SUT
         IOUtil.closeSilently(stream);
     }
 
     @Test
     void closeSilentry_他の例外が発生する() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = mock(InputStream.class);
         doThrow(new RuntimeException()).when(stream).close();
 
-        // Exercise & Verify
+        // Exercise SUT & Verify outcome
         expectThrows(RuntimeException.class, () -> {
             IOUtil.closeSilently(stream);
         });
@@ -77,11 +77,11 @@ class IOUtilTest {
 
     @Test
     void closeSilentry_closeされている() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = TestResourceUtil.getResourceAsStream("assets/empty.txt");
         stream.close();
 
-        // Exercise
+        // Exercise SUT
         IOUtil.closeSilently(stream);
     }
 
@@ -90,54 +90,54 @@ class IOUtilTest {
     //*******************************************************
     @Test
     void toBufferedReader_一行() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = new ByteArrayInputStream("I am a pen.".getBytes(Charset.defaultCharset()));
 
-        // Exercise
+        // Exercise SUT
         BufferedReader actual = IOUtil.toBufferedReader(stream);
 
-        // Verify
+        // Verify outcome
         assertThat(actual.readLine(), is("I am a pen."));
     }
 
     @Test
     void toBufferedReader_複数行() throws Exception {
-        // SetUp
+        // Set up fixture
         StringBuilder builder = new StringBuilder();
         builder.append("I am a pen.").append(lineSeparator()).append("He is an apple.").append(lineSeparator())
                 .append("She is a book.").append(lineSeparator()).append("My father is a tyrannosaurus.");
         InputStream stream = new ByteArrayInputStream(builder.toString().getBytes(Charset.defaultCharset()));
 
-        // Exercise
+        // Exercise SUT
         BufferedReader reader = IOUtil.toBufferedReader(stream);
 
-        // Verify
+        // Verify outcome
         assertThat(reader.lines().collect(Collectors.toList()),
                 is(contains("I am a pen.", "He is an apple.", "She is a book.", "My father is a tyrannosaurus.")));
     }
 
     @Test
     void toBufferedReader_null() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = null;
 
-        // Exercise
+        // Exercise SUT
         BufferedReader reader = IOUtil.toBufferedReader(stream);
 
-        // Verify
+        // Verify outcome
         assertThat(reader, is(nullValue()));
     }
 
     @Test
     void toBufferedReader_closeされている() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = TestResourceUtil.getResourceAsStream("assets/empty.txt");
         stream.close();
 
-        // Exercise
+        // Exercise SUT
         BufferedReader reader = IOUtil.toBufferedReader(stream);
 
-        // Verify
+        // Verify outcome
         assertThat(reader.ready(), is(false));
     }
 
@@ -146,46 +146,46 @@ class IOUtilTest {
     //*******************************************************
     @Test
     void readAll_InputStream_空() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = new ByteArrayInputStream(new byte[0]);
 
-        // Exercise
+        // Exercise SUT
         String actual = IOUtil.readAll(stream);
 
-        // Verify
+        // Verify outcome
         assertThat(actual, is(""));
     }
 
     @Test
     void readAll_InputStream_単一行() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = new ByteArrayInputStream("hoge".getBytes());
 
-        // Exercise
+        // Exercise SUT
         String actual = IOUtil.readAll(stream);
 
-        // Verify
+        // Verify outcome
         assertThat(actual, is("hoge"));
     }
 
     @Test
     void readAll_InputStream_複数行() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = new ByteArrayInputStream("hoge\nfoo\nbar".getBytes());
 
-        // Exercise
+        // Exercise SUT
         String actual = IOUtil.readAll(stream);
 
-        // Verify
+        // Verify outcome
         assertThat(actual, is("hoge\nfoo\nbar"));
     }
 
     @Test
     void readAll_InputStream_null() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = null;
 
-        // Exercise & Verify
+        // Exercise SUT & Verify outcome
         expectThrows(NullPointerException.class, () -> {
             IOUtil.readAll(stream);
         });
@@ -193,11 +193,11 @@ class IOUtilTest {
 
     @Test
     void readAll_InputStream_close済み() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = TestResourceUtil.getResourceAsStream("assets/empty.txt");
         stream.close();
 
-        // Exercise & Verify
+        // Exercise SUT & Verify outcome
         expectThrows(IOException.class, () -> {
             IOUtil.readAll(stream);
         });
@@ -208,62 +208,62 @@ class IOUtilTest {
     //*******************************************************
     @Test
     void readAll_InputStream_Charset_文字コード一致_MS932() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = spy(new ByteArrayInputStream("私はペンです。".getBytes(MS932)));
 
-        // Exercise
+        // Exercise SUT
         String actual = IOUtil.readAll(stream, MS932);
 
-        // Verify
+        // Verify outcome
         assertThat(actual, is("私はペンです。"));
         verify(stream).close();
     }
 
     @Test
     void readAll_InputStream_Charset_文字コード一致_GB2312() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = spy(new ByteArrayInputStream("我一支钢笔".getBytes(Charset.forName("GB2312"))));
 
-        // Exercise
+        // Exercise SUT
         String actual = IOUtil.readAll(stream, Charset.forName("GB2312"));
 
-        // Verify
+        // Verify outcome
         assertThat(actual, is("我一支钢笔"));
         verify(stream).close();
     }
 
     @Test
     void readAll_InputStream_Charset_文字コード不一致() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = spy(new ByteArrayInputStream("私はペンです。".getBytes(MS932)));
 
-        // Exercise
+        // Exercise SUT
         String actual = IOUtil.readAll(stream, Charset.forName("EUC-JP"));
 
-        // Verify
+        // Verify outcome
         assertThat(actual, is(not("私はペンです。")));
         verify(stream).close();
     }
 
     @Test
     void readAll_InputStream_Charset_文字コードがnull() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = spy(new ByteArrayInputStream("私はペンです。".getBytes(Charset.defaultCharset())));
 
-        // Exercise
+        // Exercise SUT
         String actual = IOUtil.readAll(stream, null);
 
-        // Verify
+        // Verify outcome
         assertThat(actual, is("私はペンです。"));
         verify(stream).close();
     }
 
     @Test
     void readAll_InputStream_Charset_ストリームがnull() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = null;
 
-        // Exercise & Verify
+        // Exercise SUT & Verify outcome
         expectThrows(NullPointerException.class, () -> {
             IOUtil.readAll(stream, Charset.defaultCharset());
         });
@@ -271,11 +271,11 @@ class IOUtilTest {
 
     @Test
     void readAll_InputStream_Charset_close済み() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = TestResourceUtil.getResourceAsStream("assets/empty.txt");
         stream.close();
 
-        // Exercise & Verify
+        // Exercise SUT & Verify outcome
         expectThrows(IOException.class, () -> {
             IOUtil.readAll(stream);
         });
@@ -286,49 +286,49 @@ class IOUtilTest {
     //*******************************************************
     @Test
     void readAllSilently_InputStream_空() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = spy(new ByteArrayInputStream(new byte[0]));
 
-        // Exercise
+        // Exercise SUT
         String actual = IOUtil.readAllSilently(stream);
 
-        // Verify
+        // Verify outcome
         assertThat(actual, is(""));
         verify(stream).close();
     }
 
     @Test
     void readAllSilently_InputStream_単一行() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = spy(new ByteArrayInputStream("hoge".getBytes()));
 
-        // Exercise
+        // Exercise SUT
         String actual = IOUtil.readAllSilently(stream);
 
-        // Verify
+        // Verify outcome
         assertThat(actual, is("hoge"));
         verify(stream).close();
     }
 
     @Test
     void readAllSilently_InputStream_複数行() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = spy(new ByteArrayInputStream("hoge\nfoo\nbar".getBytes()));
 
-        // Exercise
+        // Exercise SUT
         String actual = IOUtil.readAllSilently(stream);
 
-        // Verify
+        // Verify outcome
         assertThat(actual, is("hoge\nfoo\nbar"));
         verify(stream).close();
     }
 
     @Test
     void readAllSilently_InputStream_null() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = null;
 
-        // Exercise & Verify
+        // Exercise SUT & Verify outcome
         expectThrows(NullPointerException.class, () -> {
             IOUtil.readAllSilently(stream);
         });
@@ -336,11 +336,11 @@ class IOUtilTest {
 
     @Test
     void readAllSilently_InputStream_close済み() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = TestResourceUtil.getResourceAsStream("assets/empty.txt");
         stream.close();
 
-        // Exercise & Verify
+        // Exercise SUT & Verify outcome
         expectThrows(UncheckedIOException.class, () -> {
             IOUtil.readAllSilently(stream);
         });
@@ -351,62 +351,62 @@ class IOUtilTest {
     //*******************************************************
     @Test
     void readAllSilently_InputStream_Charset_文字コード一致_MS932() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = spy(new ByteArrayInputStream("私はペンです。".getBytes(MS932)));
 
-        // Exercise
+        // Exercise SUT
         String actual = IOUtil.readAllSilently(stream, MS932);
 
-        // Verify
+        // Verify outcome
         assertThat(actual, is("私はペンです。"));
         verify(stream).close();
     }
 
     @Test
     void readAllSilently_InputStream_Charset_文字コード一致_GB2312() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = spy(new ByteArrayInputStream("我一支钢笔".getBytes(Charset.forName("GB2312"))));
 
-        // Exercise
+        // Exercise SUT
         String actual = IOUtil.readAllSilently(stream, Charset.forName("GB2312"));
 
-        // Verify
+        // Verify outcome
         assertThat(actual, is("我一支钢笔"));
         verify(stream).close();
     }
 
     @Test
     void readAllSilently_InputStream_Charset_文字コード不一致() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = spy(new ByteArrayInputStream("私はペンです。".getBytes(MS932)));
 
-        // Exercise
+        // Exercise SUT
         String actual = IOUtil.readAllSilently(stream, Charset.forName("EUC-JP"));
 
-        // Verify
+        // Verify outcome
         assertThat(actual, is(not("私はペンです。")));
         verify(stream).close();
     }
 
     @Test
     void readAllSilently_InputStream_Charset_文字コードがnull() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = spy(new ByteArrayInputStream("私はペンです。".getBytes(Charset.defaultCharset())));
 
-        // Exercise
+        // Exercise SUT
         String actual = IOUtil.readAllSilently(stream, null);
 
-        // Verify
+        // Verify outcome
         assertThat(actual, is("私はペンです。"));
         verify(stream).close();
     }
 
     @Test
     void readAllSilently_InputStream_Charset_ストリームがnull() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = null;
 
-        // Exercise & Verify
+        // Exercise SUT & Verify outcome
         expectThrows(NullPointerException.class, () -> {
             IOUtil.readAllSilently(stream, Charset.defaultCharset());
         });
@@ -414,11 +414,11 @@ class IOUtilTest {
 
     @Test
     void readAllSilently_InputStream_Charset_close済み() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream stream = TestResourceUtil.getResourceAsStream("assets/empty.txt");
         stream.close();
 
-        // Exercise & Verify
+        // Exercise SUT & Verify outcome
         expectThrows(UncheckedIOException.class, () -> {
             IOUtil.readAllSilently(stream);
         });
@@ -429,14 +429,14 @@ class IOUtilTest {
     //*******************************************************
     @Test
     void copy_空文字() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream source = spy(new ByteArrayInputStream(new byte[0]));
         ByteArrayOutputStream dest = spy(new ByteArrayOutputStream());
 
-        // Exercise
+        // Exercise SUT
         IOUtil.copy(source, dest);
 
-        // Verify
+        // Verify outcome
         assertThat(new String(dest.toByteArray()), is(""));
         verify(source).close();
         verify(dest).close();
@@ -444,14 +444,14 @@ class IOUtilTest {
 
     @Test
     void copy_単一行() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream source = spy(new ByteArrayInputStream("あいうえおかきくけこ".getBytes()));
         ByteArrayOutputStream dest = spy(new ByteArrayOutputStream());
 
-        // Exercise
+        // Exercise SUT
         IOUtil.copy(source, dest);
 
-        // Verify
+        // Verify outcome
         assertThat(new String(dest.toByteArray()), is("あいうえおかきくけこ"));
         verify(source).close();
         verify(dest).close();
@@ -459,14 +459,14 @@ class IOUtilTest {
 
     @Test
     void copy_複数行() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream source = spy(new ByteArrayInputStream("hoge\nfoo\nbar".getBytes()));
         ByteArrayOutputStream dest = spy(new ByteArrayOutputStream());
 
-        // Exercise
+        // Exercise SUT
         IOUtil.copy(source, dest);
 
-        // Verify
+        // Verify outcome
         assertThat(new String(dest.toByteArray()), is("hoge\nfoo\nbar"));
         verify(source).close();
         verify(dest).close();
@@ -474,14 +474,14 @@ class IOUtilTest {
 
     @Test
     void copy_文字コードMS932() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream source = spy(new ByteArrayInputStream("あいうえおかきくけこ".getBytes(MS932)));
         ByteArrayOutputStream dest = spy(new ByteArrayOutputStream());
 
-        // Exercise
+        // Exercise SUT
         IOUtil.copy(source, dest);
 
-        // Verify
+        // Verify outcome
         assertThat(new String(dest.toByteArray(), MS932), is("あいうえおかきくけこ"));
         verify(source).close();
         verify(dest).close();
@@ -489,65 +489,65 @@ class IOUtilTest {
 
     @Test
     void copy_InputStreamがclose済み() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream source = TestResourceUtil.getResourceAsStream("assets/empty.txt");
         source.close();
         ByteArrayOutputStream dest = spy(new ByteArrayOutputStream());
 
-        // Exercise
+        // Exercise SUT
         expectThrows(IOException.class, () -> {
             IOUtil.copy(source, dest);
         });
 
-        // Verify
+        // Verify outcome
         assertThat(dest.size(), is(0));
         verify(dest).close();
     }
 
     @Test
     void copy_OutputStreamがclose済み() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream source = spy(new ByteArrayInputStream("hoge".getBytes()));
         OutputStream dest = Files.newOutputStream(Paths.get(TestResourceUtil.getFilePath("assets/empty.txt")));
         dest.close();
 
-        // Exercise
+        // Exercise SUT
         expectThrows(IOException.class, () -> {
             IOUtil.copy(source, dest);
         });
 
-        // Verify
+        // Verify outcome
         verify(source).close();
     }
 
     @Test
     void copy_InputStreamがnull() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream source = null;
         ByteArrayOutputStream dest = spy(new ByteArrayOutputStream());
 
-        // Exercise
+        // Exercise SUT
         expectThrows(NullPointerException.class, () -> {
             IOUtil.copy(source, dest);
         });
 
-        // Verify
+        // Verify outcome
         assertThat(dest.size(), is(0));
         verify(dest).close();
     }
 
     @Test
     void copy_OutputStreamがnull() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream source = spy(new ByteArrayInputStream("hoge".getBytes()));
         OutputStream dest = null;
 
-        // Exercise
+        // Exercise SUT
         expectThrows(NullPointerException.class, () -> {
             IOUtil.copy(source, dest);
         });
 
-        // Verify
+        // Verify outcome
         verify(source).close();
     }
 
@@ -556,14 +556,14 @@ class IOUtilTest {
     //*******************************************************
     @Test
     void copySilently_空文字() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream source = spy(new ByteArrayInputStream(new byte[0]));
         ByteArrayOutputStream dest = spy(new ByteArrayOutputStream());
 
-        // Exercise
+        // Exercise SUT
         IOUtil.copySilently(source, dest);
 
-        // Verify
+        // Verify outcome
         assertThat(new String(dest.toByteArray()), is(""));
         verify(source).close();
         verify(dest).close();
@@ -571,14 +571,14 @@ class IOUtilTest {
 
     @Test
     void copySilently_単一行() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream source = spy(new ByteArrayInputStream("あいうえおかきくけこ".getBytes()));
         ByteArrayOutputStream dest = spy(new ByteArrayOutputStream());
 
-        // Exercise
+        // Exercise SUT
         IOUtil.copySilently(source, dest);
 
-        // Verify
+        // Verify outcome
         assertThat(new String(dest.toByteArray()), is("あいうえおかきくけこ"));
         verify(source).close();
         verify(dest).close();
@@ -586,14 +586,14 @@ class IOUtilTest {
 
     @Test
     void copySilently_複数行() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream source = spy(new ByteArrayInputStream("hoge\nfoo\nbar".getBytes()));
         ByteArrayOutputStream dest = spy(new ByteArrayOutputStream());
 
-        // Exercise
+        // Exercise SUT
         IOUtil.copySilently(source, dest);
 
-        // Verify
+        // Verify outcome
         assertThat(new String(dest.toByteArray()), is("hoge\nfoo\nbar"));
         verify(source).close();
         verify(dest).close();
@@ -601,14 +601,14 @@ class IOUtilTest {
 
     @Test
     void copySilently_文字コードMS932() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream source = spy(new ByteArrayInputStream("あいうえおかきくけこ".getBytes(MS932)));
         ByteArrayOutputStream dest = spy(new ByteArrayOutputStream());
 
-        // Exercise
+        // Exercise SUT
         IOUtil.copySilently(source, dest);
 
-        // Verify
+        // Verify outcome
         assertThat(new String(dest.toByteArray(), MS932), is("あいうえおかきくけこ"));
         verify(source).close();
         verify(dest).close();
@@ -616,65 +616,65 @@ class IOUtilTest {
 
     @Test
     void copySilently_InputStreamがclose済み() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream source = TestResourceUtil.getResourceAsStream("assets/empty.txt");
         source.close();
         ByteArrayOutputStream dest = spy(new ByteArrayOutputStream());
 
-        // Exercise
+        // Exercise SUT
         expectThrows(UncheckedIOException.class, () -> {
             IOUtil.copySilently(source, dest);
         });
 
-        // Verify
+        // Verify outcome
         assertThat(dest.size(), is(0));
         verify(dest).close();
     }
 
     @Test
     void copySilently_OutputStreamがclose済み() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream source = spy(new ByteArrayInputStream("hoge".getBytes()));
         OutputStream dest = Files.newOutputStream(Paths.get(TestResourceUtil.getFilePath("assets/empty.txt")));
         dest.close();
 
-        // Exercise
+        // Exercise SUT
         expectThrows(UncheckedIOException.class, () -> {
             IOUtil.copySilently(source, dest);
         });
 
-        // Verify
+        // Verify outcome
         verify(source).close();
     }
 
     @Test
     void copySilently_InputStreamがnull() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream source = null;
         ByteArrayOutputStream dest = spy(new ByteArrayOutputStream());
 
-        // Exercise
+        // Exercise SUT
         expectThrows(NullPointerException.class, () -> {
             IOUtil.copySilently(source, dest);
         });
 
-        // Verify
+        // Verify outcome
         assertThat(dest.size(), is(0));
         verify(dest).close();
     }
 
     @Test
     void copySilently_OutputStreamがnull() throws Exception {
-        // SetUp
+        // Set up fixture
         InputStream source = spy(new ByteArrayInputStream("hoge".getBytes()));
         OutputStream dest = null;
 
-        // Exercise
+        // Exercise SUT
         expectThrows(NullPointerException.class, () -> {
             IOUtil.copySilently(source, dest);
         });
 
-        // Verify
+        // Verify outcome
         verify(source).close();
     }
 }
