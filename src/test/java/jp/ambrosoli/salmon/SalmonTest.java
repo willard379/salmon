@@ -522,19 +522,19 @@ class SalmonTest {
     void 標準出力をファイルにリダイレクト() throws Exception {
         msdos(() -> {
             // Set up fixture
-            File tempFile = Files.createTempFile("", "").toFile();
+            File redirectDestination = Files.createTempFile("", "").toFile();
 
             try {
                 // Exercise SUT
-                CommandState state = command("echo").options("hoge").redirectStdout(tempFile).execute();
+                CommandState state = command("echo").options("hoge").redirectStdout(redirectDestination).execute();
 
                 // Verify outcome
                 verifySucceeded(state);
-                assertThat(StringUtil.chomp(IOUtil.readAll(new FileInputStream(tempFile))), is("hoge"));
+                assertThat(StringUtil.chomp(IOUtil.readAll(new FileInputStream(redirectDestination))), is("hoge"));
 
             } finally {
                 // Tear down fixture
-                tempFile.delete();
+                redirectDestination.delete();
             }
         });
     }
@@ -543,19 +543,20 @@ class SalmonTest {
     void 標準エラー出力をファイルにリダイレクト() throws Exception {
         msdos(() -> {
             // Set up fixture
-            File tempFile = Files.createTempFile("", "").toFile();
+            File redirectDestination = Files.createTempFile("", "").toFile();
 
             try {
                 // Exercise SUT
-                CommandState state = command("java").options("-version").redirectStderr(tempFile).execute();
+                CommandState state = command("java").options("-version").redirectStderr(redirectDestination).execute();
 
                 // Verify outcome
                 verifySucceeded(state);
-                assertThat(StringUtil.chomp(IOUtil.readAll(new FileInputStream(tempFile))), startsWith("java version"));
+                assertThat(StringUtil.chomp(IOUtil.readAll(new FileInputStream(redirectDestination))),
+                        startsWith("java version"));
 
             } finally {
                 // Tear down fixture
-                tempFile.delete();
+                redirectDestination.delete();
             }
         });
     }
