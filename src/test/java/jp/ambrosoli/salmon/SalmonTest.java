@@ -533,7 +533,7 @@ class SalmonTest {
                 assertThat(StringUtil.chomp(IOUtil.readAll(new FileInputStream(tempFile))), is("hoge"));
 
             } finally {
-                // Teardown
+                // Tear down fixture
                 tempFile.delete();
             }
         });
@@ -554,7 +554,7 @@ class SalmonTest {
                 assertThat(StringUtil.chomp(IOUtil.readAll(new FileInputStream(tempFile))), startsWith("java version"));
 
             } finally {
-                // Teardown
+                // Tear down fixture
                 tempFile.delete();
             }
         });
